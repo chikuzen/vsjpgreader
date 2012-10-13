@@ -17,7 +17,7 @@ Usage:
     >>> srcs = ['/path/to/file1.jpg', '/path/to/file2.jpg', ... ,'/path/to/fileX.jpg']
     >>> clip = core.jpgr.Read(srcs)
 
-    - read image sequesce:
+    - read image sequence:
     >>> import os
     >>> dir = '/path/to/the/directory/'
     >>> srcs = [dir + src for src in os.listdir(dir) if src.endswith('.jpg')]
@@ -31,6 +31,26 @@ note:
     - The image width will be make into mod 4 with padding. This is not a bug but a limitation.
 
     - When reading two or more images, all those width, height, and chroma-subsampling-type need to be the same.
+
+How to compile:
+---------------
+    Like as follows::
+    
+    $ git clone git://github.com/chikuzen/vsjpgreader.git
+    $ cd ./vsjpgreader
+    $ HERE=$(pwd)
+    $ wget -O - http://sourceforge.net/projects/libjpeg-turbo/files/1.2.1/libjpeg-turbo-1.2.1.tar.gz | tar zxf -
+    $ cd ./libjpeg-turbo-1.2.1
+    $ autoreconf -fiv
+    $ ./configure --prefix=${HERE} --disable-shared
+    $ make -j4 && make test && make install-strip
+    $ cd ..
+    $ ./configure --extra-cflags="-I./include" --extra-ldflags="-L./lib"
+    $ make
+
+    - NASM is required for compiling libjpeg-turbo.
+    - On msys/mingw, you have to install autoconf,automake and libtool into /mingw (not /usr).
+      If they are not place on the expected position, autoreconf will fail.
 
 misc:
 -----
@@ -52,4 +72,4 @@ link:
 
         http://www.libjpeg-turbo.org/
 
-Author: Oka Motofumi (chikuzen.mo at gmai dot com)
+Author: Oka Motofumi (chikuzen.mo at gmail dot com)
