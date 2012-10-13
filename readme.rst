@@ -25,16 +25,12 @@ Usage:
 
 note:
 -----
-    - Generally, jpeg images are compressed after converted source RGB to 8bit planar YUV,
-    and they are reconverted to RGB at the time of decoding.
+    - Generally, jpeg images are compressed after converted source RGB to 8bit planar YUV, and they are reconverted to RGB at the time of decoding.
+      vsjpgreader omits the reconversion to RGB, and keep them with YUV.
 
-    vsjpgreader omits the reconversion to RGB, and keep them with YUV.
+    - The image width will be make into mod 4 with padding. This is not a bug but a limitation.
 
-    - The image width will be make into mod 4 with padding. This is not a bug
-    but a limitation.
-
-    - When reading two or more images, all those width, height, and chroma-subsampling-type
-    need to be the same.
+    - When reading two or more images, all those width, height, and chroma-subsampling-type need to be the same.
 
 misc:
 -----
