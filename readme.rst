@@ -2,7 +2,7 @@
 vsjpgreader - JPEG image reader for VapourSynth
 ================================================
 
-this software is based in part on the work of the Independent JPEG Group.
+This software is based in part on the work of the Independent JPEG Group.
 
 Usage:
 ------
@@ -23,7 +23,7 @@ Usage:
     >>> srcs = [dir + src for src in os.listdir(dir) if src.endswith('.jpg')]
     >>> clip = core.jpgr.Read(srcs)
 
-note:
+Note:
 -----
     - Generally, jpeg images are compressed after converted source RGB to 8bit planar YUV, and they are reconverted to RGB at the time of decoding.
       vsjpgreader omits the reconversion to RGB, and keep them with YUV.
@@ -52,13 +52,13 @@ How to compile:
     - On msys/mingw, you have to install autoconf,automake and libtool into /mingw (not /usr).
       If they are not place on the expected position, autoreconf will fail.
 
-misc:
+Misc:
 -----
-    - vsjpgreader is using TurboJPEG/OSS library. TurboJPEG/OSS is a part of libjpeg-turbo project.
+    - vsjpgreader is using TurboJPEG/OSS library. TurboJPEG/OSS is part of libjpeg-turbo project.
 
     - libjpeg-turbo is a derivative of libjpeg that uses SIMD instructions (MMX, SSE2, NEON) to accelerate baseline JPEG compression and decompression on x86, x86-64, and ARM systems.
 
-link:
+Link:
 -----
     vsjpgreader source code repository:
 
@@ -71,5 +71,6 @@ link:
     libjpeg-turbo:
 
         http://www.libjpeg-turbo.org/
+
 
 Author: Oka Motofumi (chikuzen.mo at gmail dot com)
