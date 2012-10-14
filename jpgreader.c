@@ -31,7 +31,7 @@
 #include "turbojpeg.h"
 #include "VapourSynth.h"
 
-#define VS_JPGR_VERSION "0.1.0"
+#define VS_JPGR_VERSION "0.1.1"
 #define INITIAL_SRC_BUFF_SIZE (2 * 1024 * 1024) /* 2MiByte */
 
 typedef struct jpeg_handle {
@@ -151,6 +151,9 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
     }
 
     width = ((width + 3) >> 2) << 2;
+    if (subsample == TJSAMP_420 || subsample == TJSAMP_440) {
+        height += height & 1;
+    }
 
     if (whs->width != width || whs->height != height) {
         if (n > 0) {
@@ -296,7 +299,7 @@ create_source(const VSMap *in, VSMap *out, void *user_data, VSCore *core,
     struct stat st;
     whs_t whs = { 0 };
     jh->tjh = tjInitDecompress();
-    RET_IF_ERR(!jh->tjh, "%s\n", tjGetErrorStr());
+    RET_IF_ERR(!jh->tjh, "%s", tjGetErrorStr());
 
     for (int i = 0; i < num_srcs; i++) {
         char *cs = check_srcs(jh, &st, i, &whs);

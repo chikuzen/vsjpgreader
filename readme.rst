@@ -30,6 +30,8 @@ Note:
 
     - The image width will be make into mod 4 with padding. This is not a bug but a limitation.
 
+    - If subsample-type of the image is YUV420 or YUV440, the height of that will be make into mod 2 with padding. This is also a limitation.
+
     - When reading two or more images, all those width, height, and chroma-subsampling-type need to be the same.
 
 How to compile:
