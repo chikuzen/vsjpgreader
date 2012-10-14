@@ -109,7 +109,7 @@ static VSPresetFormat VS_CC tjsamp_to_vspresetformat(enum TJSAMP tjsamp)
         { TJSAMP_440,  pfYUV440P8 },
         { tjsamp,      pfNone     }
     };
-    
+
     int i = 0;
     while (table[i].tjsample_type != tjsamp) i++;
     return table[i].vsformat;
@@ -122,7 +122,7 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
     if (stat(jh->src_files[n], st)) {
         return "source file does not exist";
     }
-    
+
     jh->src_size[n] = st->st_size;
     if (jh->buff_size < st->st_size) {
         jh->buff_size = st->st_size;
@@ -137,21 +137,21 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
     if (!fp) {
         return "failed to open file";
     }
-    
+
     unsigned long read = fread(jh->src_buff, 1, st->st_size, fp);
     fclose(fp);
     if (read < st->st_size) {
         return "failed to read file";
     }
-    
+
     int width, height, subsample;
     if (tjDecompressHeader2(
             jh->tjh, jh->src_buff, read, &width, &height, &subsample) != 0) {
         return tjGetErrorStr();
     }
-    
+
     width = ((width + 3) >> 2) << 2;
-    
+
     if (whs->width != width || whs->height != height) {
         if (n > 0) {
             return "found a file which has diffrent resolution from first file";
@@ -159,14 +159,14 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
         whs->width = width;
         whs->height = height;
     }
-    
+
     if (whs->subsample != subsample) {
         if (n > 0) {
             return "found a file witch has different sample type from first file";
         }
         whs->subsample = subsample;
     }
-    
+
     return NULL;
 }
 
@@ -188,12 +188,12 @@ jpg_bit_blt(VSFrameRef *dst, int plane, const VSAPI *vsapi, uint8_t *srcp,
 {
     uint8_t *dstp = vsapi->getWritePtr(dst, plane);
     int dst_stride = vsapi->getStride(dst, plane);
-    
+
     if (row_size == dst_stride) {
         memcpy(dstp, srcp, row_size * height);
         return;
     }
-    
+
     for (int i = 0; i < height; i++) {
         memcpy(dstp, srcp, row_size);
         dstp += dst_stride;
@@ -210,36 +210,36 @@ jpg_get_frame(int n, int activation_reason, void **instance_data,
     if (activation_reason != arInitial) {
         return NULL;
     }
-    
+
     jpg_hnd_t *jh = (jpg_hnd_t *)*instance_data;
-    
+
     int frame_number = n;
     if (n >= jh->vi.numFrames) {
         frame_number = jh->vi.numFrames - 1;
     }
-    
+
     FILE *fp = fopen(jh->src_files[frame_number], "rb");
     if (!fp) {
         return NULL;
     }
-    
+
     unsigned long read = fread(jh->src_buff, 1, jh->src_size[frame_number], fp);
     fclose(fp);
     if (read < jh->src_size[frame_number]) {
         return NULL;
     }
-    
+
     if (tjDecompressToYUV(jh->tjh, jh->src_buff, read, jh->decode_buff, 0)) {
         return NULL;
     }
-    
+
     VSFrameRef *dst = vsapi->newVideoFrame(jh->vi.format, jh->vi.width,
                                            jh->vi.height, NULL, core);
 
     VSMap *props = vsapi->getFramePropsRW(dst);
     vsapi->propSetInt(props, "_DurationNum", jh->vi.fpsDen, 0);
     vsapi->propSetInt(props, "_DurationDen", jh->vi.fpsNum, 0);
-    
+
     uint8_t *srcp = jh->decode_buff;
     for (int i = 0, time = jh->vi.format->numPlanes; i < time; i++) {
         int row_size = vsapi->getFrameWidth(dst, i);
@@ -247,7 +247,7 @@ jpg_get_frame(int n, int activation_reason, void **instance_data,
         jpg_bit_blt(dst, i, vsapi, srcp, row_size, height);
         srcp += row_size * height;
     }
-    
+
     return dst;
 }
 
@@ -278,7 +278,7 @@ create_source(const VSMap *in, VSMap *out, void *user_data, VSCore *core,
 
     jh->src_files = (const char **)calloc(sizeof(char *), num_srcs);
     RET_IF_ERR(!jh->src_files, "failed to allocate array of src files");
-    
+
     int err;
     for (int i = 0; i < num_srcs; i++) {
         jh->src_files[i] = vsapi->propGetData(in, "files", i, &err);
@@ -311,7 +311,7 @@ create_source(const VSMap *in, VSMap *out, void *user_data, VSCore *core,
     set_args_int64(&jh->vi.fpsNum, 24, "fpsnum", &va);
     set_args_int64(&jh->vi.fpsDen, 1, "fpsden", &va);
     RET_IF_ERR(jh->vi.format->id == pfNone, "unsupported format");
-    
+
     jh->decode_buff = malloc(tjBufSizeYUV(whs.width, whs.height, whs.subsample));
     RET_IF_ERR(!jh->decode_buff, "failed to allocate decode buffer");
 

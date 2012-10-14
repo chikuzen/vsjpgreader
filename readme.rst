@@ -35,7 +35,7 @@ Note:
 How to compile:
 ---------------
     Like as follows::
-    
+
     $ git clone git://github.com/chikuzen/vsjpgreader.git
     $ cd ./vsjpgreader
     $ HERE=$(pwd)
