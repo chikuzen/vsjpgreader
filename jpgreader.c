@@ -272,7 +272,7 @@ static void VS_CC
 create_source(const VSMap *in, VSMap *out, void *user_data, VSCore *core,
               const VSAPI *vsapi)
 {
-    char msg_buff[256] = "jpgs: ";
+    char msg_buff[256] = "jpgr: ";
     char *msg = msg_buff + strlen(msg_buff);
     vs_args_t va = {in, out, core, vsapi};
 
