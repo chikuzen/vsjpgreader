@@ -150,7 +150,7 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
         return tjGetErrorStr();
     }
 
-    if (subsample == TJSAMP_420 || subsample == TJSAMP_440) {
+    if (subsample == TJSAMP_420 || subsample == TJSAMP_422) {
         width += width & 1;
     }
     if (subsample == TJSAMP_420 || subsample == TJSAMP_440) {
