@@ -31,7 +31,7 @@
 #include "turbojpeg.h"
 #include "VapourSynth.h"
 
-#define VS_JPGR_VERSION "0.1.1"
+#define VS_JPGR_VERSION "0.1.2"
 #define INITIAL_SRC_BUFF_SIZE (2 * 1024 * 1024) /* 2MiByte */
 
 typedef struct jpeg_handle {
@@ -150,7 +150,9 @@ check_srcs(jpg_hnd_t *jh, struct stat *st, int n, whs_t *whs)
         return tjGetErrorStr();
     }
 
-    width = ((width + 3) >> 2) << 2;
+    if (subsample == TJSAMP_420 || subsample == TJSAMP_440) {
+        width += width & 1;
+    }
     if (subsample == TJSAMP_420 || subsample == TJSAMP_440) {
         height += height & 1;
     }
@@ -246,6 +248,7 @@ jpg_get_frame(int n, int activation_reason, void **instance_data,
     uint8_t *srcp = jh->decode_buff;
     for (int i = 0, time = jh->vi.format->numPlanes; i < time; i++) {
         int row_size = vsapi->getFrameWidth(dst, i);
+        row_size = (row_size + 3) & (~3);
         int height = vsapi->getFrameHeight(dst, i);
         jpg_bit_blt(dst, i, vsapi, srcp, row_size, height);
         srcp += row_size * height;

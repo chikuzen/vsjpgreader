@@ -28,9 +28,9 @@ Note:
     - Generally, jpeg images are compressed after converted source RGB to 8bit planar YUV, and they are reconverted to RGB at the time of decoding.
       vsjpgreader omits the reconversion to RGB, and keep them with YUV.
 
-    - The image width will be make into mod 4 with padding. This is not a bug but a limitation.
+    - If chroma-subsample-type of the image is YUV420 or YUV422, the width of that will be make into mod 2 with padding.
 
-    - If subsample-type of the image is YUV420 or YUV440, the height of that will be make into mod 2 with padding. This is also a limitation.
+    - Also, If subsample-type of the image is YUV420 or YUV440, the height of that will be make into mod 2 with padding. 
 
     - When reading two or more images, all those width, height, and chroma-subsampling-type need to be the same.
 
